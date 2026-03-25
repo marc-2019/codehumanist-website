@@ -612,6 +612,10 @@ p {
   margin-bottom: var(--space-2);
   letter-spacing: -0.03em;
 }
+.stat-number--word {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  letter-spacing: -0.01em;
+}
 
 .stat-unit {
   font-size: 0.6em;
