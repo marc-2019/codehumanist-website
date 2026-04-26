@@ -1,0 +1,53 @@
+# CodeHumanist
+
+> Read-only codebase comprehension platform for human stakeholders. Understand
+> AI-generated codebases — architecture, data flows, use cases — without
+> touching a line of code. AI writes the code; you still need to know what it
+> does, how it's structured, and where the risk sits.
+
+## About
+
+CodeHumanist is a SaaS platform from Instilligent Limited (NZ) for the people
+who matter most to a business but can't read code: founders reviewing what
+their AI-built product actually does, product managers reasoning about a
+codebase they didn't write, compliance officers auditing AI-generated systems,
+investors doing technical due diligence, and operators inheriting handoff from
+a vibe-coding sprint.
+
+Vibe coding and AI-generated software changed who writes the code — but not
+who needs to understand it. CodeHumanist closes that gap.
+
+## What it does
+
+- **System Overview** — plain-English summary of what your codebase does, its
+  core purpose, and how all the pieces fit together. No jargon, no assumptions.
+- **Architecture Maps** — visual diagrams of services, databases, APIs, and
+  integrations rendered for non-developers.
+- **Use Cases & Data Model** — what the system actually does as business logic,
+  not code: user journeys, core entities, data relationships.
+- **Risk surfacing** — flags the parts of the codebase most likely to hide
+  surprises (auth, payments, data exfil paths) for stakeholder review.
+
+## Who it's for
+
+- Founders evaluating their own AI-built product
+- Product managers reasoning about an inherited codebase
+- Compliance and audit functions reviewing AI-generated systems
+- Investors doing technical due diligence
+- Operators inheriting handoff from a sprint of AI coding
+
+## Status
+
+Currently in waitlist phase. Visit https://codehumanist.com to join.
+
+## Built by
+
+Instilligent Limited — https://instilligent.com — NZ AI consultancy and
+product studio. We build production AI software for regulated industries
+across NZ, Australia, and Southeast Asia.
+
+## Contact
+
+- Site: https://codehumanist.com
+- Parent company: https://instilligent.com
+- Email: marc@instilligent.com
