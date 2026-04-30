@@ -57,8 +57,24 @@
     }
   ],
   "open_items": [
-    "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed.",
-    "Waitlist form (index.html line 341+ #waitlist-form-cta) — verify whether it has a real backend or is the same UX-deception pattern as the ProofOnce / instilligent.com forms. If client-side-only, replace with mailto or wire to Pages Function + Resend (same pattern as instilligent-website#3)."
+    "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed (CF task mtr-2026-04-30-ch-secaudit, P1, blocked by ch-product-build).",
+    "Full product backend (codebase comprehension engine) — entire product is 0→1 build. Site is honest as 'early access / waitlist'; substantive build is the next strategic decision (CF task mtr-2026-04-30-ch-product-build, P1, multi-week-month)."
+  ],
+  "shipped_post_audit": [
+    {
+      "id": "codehumanist.feature.waitlist-backend",
+      "claim": "Waitlist signup with real email delivery (no localStorage-only deception)",
+      "verdict_before": "STUB (client-side localStorage only — submissions never left the user's browser)",
+      "verdict_after": "IMPLEMENTED",
+      "shipped_date": "2026-05-01",
+      "ref": "marc-approved/2026-05-01-waitlist-backend — functions/api/waitlist.ts + js/main.js",
+      "cf_task": "mtr-2026-04-30-ch-waitlist",
+      "code_references": [
+        "functions/api/waitlist.ts (Cloudflare Pages Function → Resend)",
+        "js/main.js (initWaitlist — POST /api/waitlist replaces localStorage handler)"
+      ],
+      "notes": "Same Pages Function + Resend pattern as instilligent-website#3 (the contact form). RESEND_API_KEY plumbed via wrangler from MC's Railway env. Honeypot (`website` field), email regex, length caps in the Function. Routes hero + cta forms with source label. UX-deception class: closed."
+    }
   ],
   "verified_clean_directives": [
     "No partner / Anthropic / Microsoft / AWS claims",

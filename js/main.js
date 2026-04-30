@@ -203,10 +203,15 @@
 })();
 
 /* ── Waitlist form handling ─────────────────────────────────── */
+// Backend: POST /api/waitlist (Cloudflare Pages Function → Resend).
+// 2026-05-01 — replaced the localStorage-only handler that previously
+// stored signups to the user's own browser without leaving it (UX-
+// deception class flagged in 2026-04-30 audit). Now sends to
+// marc@instilligent.com via Resend, same pattern as
+// instilligent-website#3 contact form. Honeypot field + length caps
+// in the Pages Function.
 (function initWaitlist() {
-  const STORAGE_KEY = 'ch_waitlist_email';
-
-  function handleSubmit(form, feedbackEl) {
+  function handleSubmit(form, feedbackEl, sourceLabel) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -225,17 +230,18 @@
       btn.querySelector('.btn-text').textContent = 'Adding you…';
 
       try {
-        // Store locally
-        const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        if (!existing.includes(email)) {
-          existing.push(email);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+        const resp = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: sourceLabel }),
+        });
+
+        if (!resp.ok) {
+          const data = await resp.json().catch(() => ({}));
+          throw new Error(data.error || `HTTP ${resp.status}`);
         }
 
-        // Small artificial delay for UX
-        await new Promise(r => setTimeout(r, 600));
-
-        showFeedback(feedbackEl, "You're on the list! We'll be in touch.", 'success');
+        showFeedback(feedbackEl, "You're on the list — we'll be in touch.", 'success');
         emailInput.value = '';
 
         // Sync both forms to success state
@@ -243,14 +249,17 @@
           i.value = '';
         });
 
-        // Update button
         btn.querySelector('.btn-text').textContent = "You're in ✓";
         btn.style.background = 'rgba(134,239,172,0.15)';
         btn.style.borderColor = 'rgba(134,239,172,0.3)';
         btn.style.color = '#86efac';
 
       } catch (err) {
-        showFeedback(feedbackEl, 'Something went wrong — please try again.', 'error');
+        showFeedback(
+          feedbackEl,
+          'Something went wrong — please email marc@instilligent.com directly.',
+          'error',
+        );
         btn.disabled = false;
         btn.querySelector('.btn-text').textContent = 'Join the Waitlist';
       }
@@ -265,11 +274,11 @@
 
   const heroForm = document.getElementById('waitlist-form-hero');
   const heroFeedback = document.getElementById('form-feedback-hero');
-  if (heroForm) handleSubmit(heroForm, heroFeedback);
+  if (heroForm) handleSubmit(heroForm, heroFeedback, 'hero');
 
   const ctaForm = document.getElementById('waitlist-form-cta');
   const ctaFeedback = document.getElementById('form-feedback-cta');
-  if (ctaForm) handleSubmit(ctaForm, ctaFeedback);
+  if (ctaForm) handleSubmit(ctaForm, ctaFeedback, 'cta');
 })();
 
 /* ── Smooth scroll for anchor links ────────────────────────── */
