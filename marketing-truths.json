@@ -19,7 +19,7 @@
       "id": "codehumanist.positioning",
       "claim": "Read-only codebase comprehension platform for human stakeholders — architecture, data flows and use cases for stakeholders who don't read code",
       "surfaces": ["index.html (hero)", "llms.txt", "instilligent.com JSON-LD"],
-      "verdict": "PLANNED (early access)",
+      "verdict": "PLANNED",
       "last_verified": "2026-04-30",
       "notes": "Positioning of intended product. Acceptable while in early-access framing."
     },
@@ -74,6 +74,24 @@
         "js/main.js (initWaitlist — POST /api/waitlist replaces localStorage handler)"
       ],
       "notes": "Same Pages Function + Resend pattern as instilligent-website#3 (the contact form). RESEND_API_KEY plumbed via wrangler from MC's Railway env. Honeypot (`website` field), email regex, length caps in the Function. Routes hero + cta forms with source label. UX-deception class: closed."
+    },
+    {
+      "id": "codehumanist.stat.zero-lines-changed",
+      "claim_before": "0 lines of code changed by CodeHumanist — ever (a counter, becomes FALSE post-launch)",
+      "claim_after": "Read-only by design — your codebase is never modified by our analysis (intended architecture, independent audit pending)",
+      "verdict_before": "FRAGILE (would become false on first production usage)",
+      "verdict_after": "IMPLEMENTED (architectural promise framing matches the trust pillars in the Trust section)",
+      "shipped_date": "2026-05-01",
+      "ref": "marc-approved/2026-05-01-ch-sidebar-cleanup — index.html#L143-146",
+      "cf_task": "mtr-2026-04-30-ch-stat-expiry",
+      "notes": "Reframed the highlight stat from a counter to an architectural promise consistent with the rest of the trust framing. The visual treatment (highlight stat-card) is preserved but the content is now durable past launch."
+    },
+    {
+      "id": "codehumanist.cde.humanifest-removal",
+      "claim_dropped_2026_05_01": "Reference to 'Humanifest DataFlowPanel.tsx' (a component in a sibling repo that doesn't exist on disk)",
+      "verdict": "ABSENT in current files (already removed via prior commit; only present in git history)",
+      "cf_task": "mtr-2026-04-30-ch-cde-removal",
+      "notes": "Stage 2 agent flagged this from git history — verified 2026-05-01 that no current file references Humanifest or DataFlowPanel.tsx. Already resolved by an earlier commit. Task closes as no-op."
     }
   ],
   "verified_clean_directives": [
