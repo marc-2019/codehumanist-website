@@ -1,0 +1,68 @@
+{
+  "$schema": "https://instilligent.com/schemas/marketing-truths.v1.json",
+  "product_name": "CodeHumanist",
+  "product_status": "early-access (waitlist)",
+  "last_full_audit_date": "2026-04-30",
+  "last_full_audit_by": "claude+marc",
+  "audit_doc": "~/cf-research/marketing-audits/codehumanist-2026-04-30.md",
+  "cf_directive": "customer-facing-copy-requires-product-claim-audit",
+  "_note": "Sixth marketing-truths.json in the portfolio. CodeHumanist's status (waitlist) was already truthful on its own site — the audit's primary concern was the trust pillars (security/architecture promises stated as facts without an independent audit). This recall reframes them as 'by design' + 'audit pending'.",
+  "product_claims": [
+    {
+      "id": "codehumanist.status",
+      "claim": "Early access / waitlist — CodeHumanist is in early access. Join the waitlist to get first access when we launch.",
+      "surfaces": ["index.html (CTA section)", "instilligent.com portfolio (Waitlist badge per PR #2)"],
+      "verdict": "ACCURATE",
+      "last_verified": "2026-04-30"
+    },
+    {
+      "id": "codehumanist.positioning",
+      "claim": "Read-only codebase comprehension platform for human stakeholders — architecture, data flows and use cases for stakeholders who don't read code",
+      "surfaces": ["index.html (hero)", "llms.txt", "instilligent.com JSON-LD"],
+      "verdict": "PLANNED (early access)",
+      "last_verified": "2026-04-30",
+      "notes": "Positioning of intended product. Acceptable while in early-access framing."
+    },
+    {
+      "id": "codehumanist.trust.read-only",
+      "claim": "Read-only by design. CodeHumanist is built to be read-only — repository connections request read scopes only.",
+      "surfaces": ["index.html#L293-294 (trust section)", "pages/privacy.html#L185, L209, L311"],
+      "verdict": "INTENDED ARCHITECTURE",
+      "last_verified": "2026-04-30",
+      "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited."
+    },
+    {
+      "id": "codehumanist.trust.no-write",
+      "claim": "No write access (by design). Repository OAuth tokens are requested at read scope only. Audit pending.",
+      "surfaces": ["index.html#L305-306"],
+      "verdict": "INTENDED ARCHITECTURE",
+      "last_verified": "2026-04-30",
+      "previous_overclaim": "Was 'No write access — Repository connections are read-only at the API level'. Same reframe."
+    },
+    {
+      "id": "codehumanist.trust.no-execution",
+      "claim": "No code execution (by design). The platform performs static analysis only — your code is never run in our environment.",
+      "surfaces": ["index.html#L316-317"],
+      "verdict": "INTENDED ARCHITECTURE",
+      "last_verified": "2026-04-30",
+      "previous_overclaim": "Was 'No code execution — We analyse structure, not runtime behaviour'. Strengthened the explanation while adding 'by design' qualifier."
+    },
+    {
+      "id": "codehumanist.trust.data-exports",
+      "claim": "Your data, your exports. All generated documentation is yours to download and keep.",
+      "surfaces": ["index.html#L326-327"],
+      "verdict": "PLANNED",
+      "last_verified": "2026-04-30",
+      "notes": "Acceptable for early access. Verify file:line export functionality in next audit pass."
+    }
+  ],
+  "open_items": [
+    "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed.",
+    "Waitlist form (index.html line 341+ #waitlist-form-cta) — verify whether it has a real backend or is the same UX-deception pattern as the ProofOnce / instilligent.com forms. If client-side-only, replace with mailto or wire to Pages Function + Resend (same pattern as instilligent-website#3)."
+  ],
+  "verified_clean_directives": [
+    "No partner / Anthropic / Microsoft / AWS claims",
+    "Status correctly framed as early access / waitlist (not 'Live')",
+    "Privacy policy already references read-only with privacy-policy-appropriate framing"
+  ]
+}
