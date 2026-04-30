@@ -290,9 +290,9 @@
             <path d="M13 20l5 5 9-9" stroke="#C084FC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h2 id="trust-heading">Read-only. Always.</h2>
-        <p class="trust-statement">CodeHumanist is read-only. It never modifies your code.</p>
-        <p class="trust-description">We connect to your repository with read permissions only. We generate understanding — never changes. Your codebase stays exactly as it is. We simply help you see what's already there.</p>
+        <h2 id="trust-heading">Read-only by design.</h2>
+        <p class="trust-statement">CodeHumanist is built to be read-only — repository connections request read scopes only.</p>
+        <p class="trust-description">We connect to your repository with read-scope OAuth tokens to generate understanding, not changes. The intended architecture is described below. <strong>An independent third-party security audit has not yet been performed</strong> and will be published before general availability.</p>
 
         <div class="trust-pillars">
           <div class="trust-pillar">
@@ -302,8 +302,8 @@
                 <path d="M5 7V5a3 3 0 0 1 6 0v2"/>
               </svg>
             </div>
-            <strong>No write access</strong>
-            <span>Repository connections are read-only at the API level</span>
+            <strong>No write access (by design)</strong>
+            <span>Repository OAuth tokens are requested at read scope only. Audit pending.</span>
           </div>
           <div class="trust-pillar">
             <div class="trust-pillar-icon" aria-hidden="true">
@@ -313,8 +313,8 @@
                 <line x1="8" y1="4" x2="8" y2="12"/>
               </svg>
             </div>
-            <strong>No code execution</strong>
-            <span>We analyse structure, not runtime behaviour</span>
+            <strong>No code execution (by design)</strong>
+            <span>The platform performs static analysis only — your code is never run in our environment.</span>
           </div>
           <div class="trust-pillar">
             <div class="trust-pillar-icon" aria-hidden="true">
@@ -324,7 +324,7 @@
               </svg>
             </div>
             <strong>Your data, your exports</strong>
-            <span>All generated documentation is yours to download and keep</span>
+            <span>All generated documentation is yours to download and keep.</span>
           </div>
         </div>
       </div>
