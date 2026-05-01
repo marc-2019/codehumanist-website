@@ -2,25 +2,25 @@
   "$schema": "https://instilligent.com/schemas/marketing-truths.v1.json",
   "product_name": "CodeHumanist",
   "product_status": "early-access (waitlist)",
-  "last_full_audit_date": "2026-04-30",
+  "last_full_audit_date": "2026-05-01",
   "last_full_audit_by": "claude+marc",
   "audit_doc": "~/cf-research/marketing-audits/codehumanist-2026-04-30.md",
   "cf_directive": "customer-facing-copy-requires-product-claim-audit",
-  "_note": "Sixth marketing-truths.json in the portfolio. CodeHumanist's status (waitlist) was already truthful on its own site — the audit's primary concern was the trust pillars (security/architecture promises stated as facts without an independent audit). This recall reframes them as 'by design' + 'audit pending'.",
+  "_note": "CodeHumanist marketing-truths.json. 2026-04-30 trust-pillars recall reframed security promises as 'by design (audit pending)'. 2026-05-01 feature-register audit pass: waitlist backend + sidebar cleanup are now real (PR #3 + sidebar commit landed) — promoted from shipped_post_audit to product_claims. CodeHumanist's overall status (waitlist) remains accurate; substantive product build is still pending strategic decision.",
   "product_claims": [
     {
       "id": "codehumanist.status",
       "claim": "Early access / waitlist — CodeHumanist is in early access. Join the waitlist to get first access when we launch.",
       "surfaces": ["index.html (CTA section)", "instilligent.com portfolio (Waitlist badge per PR #2)"],
       "verdict": "ACCURATE",
-      "last_verified": "2026-04-30"
+      "last_verified": "2026-05-01"
     },
     {
       "id": "codehumanist.positioning",
       "claim": "Read-only codebase comprehension platform for human stakeholders — architecture, data flows and use cases for stakeholders who don't read code",
       "surfaces": ["index.html (hero)", "llms.txt", "instilligent.com JSON-LD"],
       "verdict": "PLANNED",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "notes": "Positioning of intended product. Acceptable while in early-access framing."
     },
     {
@@ -28,7 +28,7 @@
       "claim": "Read-only by design. CodeHumanist is built to be read-only — repository connections request read scopes only.",
       "surfaces": ["index.html#L293-294 (trust section)", "pages/privacy.html#L185, L209, L311"],
       "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited."
     },
     {
@@ -36,7 +36,7 @@
       "claim": "No write access (by design). Repository OAuth tokens are requested at read scope only. Audit pending.",
       "surfaces": ["index.html#L305-306"],
       "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'No write access — Repository connections are read-only at the API level'. Same reframe."
     },
     {
@@ -44,7 +44,7 @@
       "claim": "No code execution (by design). The platform performs static analysis only — your code is never run in our environment.",
       "surfaces": ["index.html#L316-317"],
       "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'No code execution — We analyse structure, not runtime behaviour'. Strengthened the explanation while adding 'by design' qualifier."
     },
     {
@@ -52,47 +52,41 @@
       "claim": "Your data, your exports. All generated documentation is yours to download and keep.",
       "surfaces": ["index.html#L326-327"],
       "verdict": "PLANNED",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "notes": "Acceptable for early access. Verify file:line export functionality in next audit pass."
+    },
+    {
+      "id": "codehumanist.feature.waitlist-backend",
+      "claim": "Waitlist signup with real email delivery — Cloudflare Pages Function routes submissions to Resend, no client-side-only deception.",
+      "surfaces": ["index.html (hero + cta forms)", "functions/api/waitlist.ts"],
+      "code_references": [
+        "functions/api/waitlist.ts (Cloudflare Pages Function → Resend)",
+        "js/main.js (initWaitlist — POST /api/waitlist)"
+      ],
+      "verdict": "IMPLEMENTED",
+      "last_verified": "2026-05-01",
+      "notes": "Promoted from shipped_post_audit 2026-05-01. Same Pages Function + Resend pattern as instilligent-website contact form. RESEND_API_KEY via wrangler from MC's Railway env. Honeypot (`website` field), email regex, length caps in the Function. Routes hero + cta forms with source label.",
+      "previous_overclaim": "Was STUB — client-side localStorage only (submissions never left the user's browser). Replaced 2026-05-01 with real backend (PR #3)."
+    },
+    {
+      "id": "codehumanist.stat.zero-lines-changed",
+      "claim": "Read-only by design — your codebase is never modified by our analysis (intended architecture, independent audit pending)",
+      "surfaces": ["index.html#L143-146 (highlight stat card)"],
+      "verdict": "INTENDED ARCHITECTURE",
+      "last_verified": "2026-05-01",
+      "notes": "Promoted from shipped_post_audit 2026-05-01. Reframed the original '0 lines of code changed by CodeHumanist — ever' counter (which would become false on first production usage) into a durable architectural-promise framing consistent with the trust pillars. Visual treatment (highlight stat-card) preserved.",
+      "previous_overclaim": "Was '0 lines of code changed by CodeHumanist — ever'. Reframed 2026-05-01 because the absolute count would become false on first production analysis."
     }
   ],
   "open_items": [
     "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed (CF task mtr-2026-04-30-ch-secaudit, P1, blocked by ch-product-build).",
     "Full product backend (codebase comprehension engine) — entire product is 0→1 build. Site is honest as 'early access / waitlist'; substantive build is the next strategic decision (CF task mtr-2026-04-30-ch-product-build, P1, multi-week-month)."
   ],
-  "shipped_post_audit": [
-    {
-      "id": "codehumanist.feature.waitlist-backend",
-      "claim": "Waitlist signup with real email delivery (no localStorage-only deception)",
-      "verdict_before": "STUB (client-side localStorage only — submissions never left the user's browser)",
-      "verdict_after": "IMPLEMENTED",
-      "shipped_date": "2026-05-01",
-      "ref": "marc-approved/2026-05-01-waitlist-backend — functions/api/waitlist.ts + js/main.js",
-      "cf_task": "mtr-2026-04-30-ch-waitlist",
-      "code_references": [
-        "functions/api/waitlist.ts (Cloudflare Pages Function → Resend)",
-        "js/main.js (initWaitlist — POST /api/waitlist replaces localStorage handler)"
-      ],
-      "notes": "Same Pages Function + Resend pattern as instilligent-website#3 (the contact form). RESEND_API_KEY plumbed via wrangler from MC's Railway env. Honeypot (`website` field), email regex, length caps in the Function. Routes hero + cta forms with source label. UX-deception class: closed."
-    },
-    {
-      "id": "codehumanist.stat.zero-lines-changed",
-      "claim_before": "0 lines of code changed by CodeHumanist — ever (a counter, becomes FALSE post-launch)",
-      "claim_after": "Read-only by design — your codebase is never modified by our analysis (intended architecture, independent audit pending)",
-      "verdict_before": "FRAGILE (would become false on first production usage)",
-      "verdict_after": "IMPLEMENTED (architectural promise framing matches the trust pillars in the Trust section)",
-      "shipped_date": "2026-05-01",
-      "ref": "marc-approved/2026-05-01-ch-sidebar-cleanup — index.html#L143-146",
-      "cf_task": "mtr-2026-04-30-ch-stat-expiry",
-      "notes": "Reframed the highlight stat from a counter to an architectural promise consistent with the rest of the trust framing. The visual treatment (highlight stat-card) is preserved but the content is now durable past launch."
-    },
-    {
-      "id": "codehumanist.cde.humanifest-removal",
-      "claim_dropped_2026_05_01": "Reference to 'Humanifest DataFlowPanel.tsx' (a component in a sibling repo that doesn't exist on disk)",
-      "verdict": "ABSENT in current files (already removed via prior commit; only present in git history)",
-      "cf_task": "mtr-2026-04-30-ch-cde-removal",
-      "notes": "Stage 2 agent flagged this from git history — verified 2026-05-01 that no current file references Humanifest or DataFlowPanel.tsx. Already resolved by an earlier commit. Task closes as no-op."
-    }
+  "shipped_post_audit": [],
+  "closed_items": [
+    "codehumanist.feature.waitlist-backend — promoted to product_claims 2026-05-01.",
+    "codehumanist.stat.zero-lines-changed — promoted to product_claims 2026-05-01.",
+    "codehumanist.cde.humanifest-removal — verified no-op 2026-05-01 (Humanifest reference not in current files; only in git history). Task closes."
   ],
   "verified_clean_directives": [
     "No partner / Anthropic / Microsoft / AWS claims",
