@@ -8,5 +8,8 @@
 /privacy      /pages/privacy.html   301
 /privacy/     /pages/privacy.html   301
 
+# Custom 404 page
+/*   /404.html   404
+
 # Catch-all SPA fallback (for future JS routing)
 # /*   /index.html   200

@@ -145,6 +145,10 @@
   }
 
   function init() {
+    if (document.readyState !== "complete") {
+      window.addEventListener("load", init);
+      return;
+    }
     resize();
     makeNodes();
     if (animId) cancelAnimationFrame(animId);

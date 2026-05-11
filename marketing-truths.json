@@ -29,7 +29,8 @@
       "surfaces": ["index.html#L293-294 (trust section)", "pages/privacy.html#L185, L209, L311"],
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
-      "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited."
+      "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited.",
+      "recall_status": "partial — apex landing 'never modifies your code' on index.html:115 retains the absolute framing as of 2026-05-12. Reframe pending Marc-decision per audit ad91eba9 (M-1)."
     },
     {
       "id": "codehumanist.trust.no-write",
@@ -76,6 +77,22 @@
       "last_verified": "2026-05-01",
       "notes": "Promoted from shipped_post_audit 2026-05-01. Reframed the original '0 lines of code changed by CodeHumanist — ever' counter (which would become false on first production usage) into a durable architectural-promise framing consistent with the trust pillars. Visual treatment (highlight stat-card) preserved.",
       "previous_overclaim": "Was '0 lines of code changed by CodeHumanist — ever'. Reframed 2026-05-01 because the absolute count would become false on first production analysis."
+    },
+    {
+      "id": "codehumanist.support.error-pages",
+      "claim": "Generic error-page UX (404 / 500) with brand chrome + return-home + waitlist/support links. No product claims. Brand strings use canonical 'Instilligent Limited' and asset paths are absolute (work on non-root URLs).",
+      "surfaces": ["404.html", "500.html"],
+      "verdict": "IMPLEMENTED",
+      "last_verified": "2026-05-12",
+      "notes": "Support surfaces enumerated for marketing-truth coverage per audit ad91eba9. Pages carry only generic error UX, footer brand ('Instilligent Limited' x3 in each), and contact links. Consolidated landing 2026-05-12 corrected a pre-merge non-canonical brand string to canonical 'Instilligent Limited' (audit ad91eba9 F-1, per feedback_brand_names.md + FTA s13(d)) and converted relative asset hrefs to absolute paths (audit ad91eba9 F-4) so the pages render correctly when served on non-root URLs."
+    },
+    {
+      "id": "codehumanist.seo.sitemap",
+      "claim": "XML sitemap at /sitemap.xml enumerating apex (/) and privacy policy. Referenced by robots.txt:69.",
+      "surfaces": ["sitemap.xml", "robots.txt"],
+      "verdict": "IMPLEMENTED",
+      "last_verified": "2026-05-12",
+      "notes": "Created 2026-05-12 to honour the robots.txt Sitemap: declaration that previously pointed at a non-existent URL. Minimal — apex + privacy policy only. Update lastmod when adding pages."
     }
   ],
   "open_items": [
