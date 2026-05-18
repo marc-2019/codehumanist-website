@@ -16,6 +16,8 @@
 # each repo, called from .husky/pre-commit or .git/hooks/pre-commit.
 #
 # Introduced 2026-04-30 as Stage 3 of the marketing-truth recall.
+# Hardened 2026-05-11 (task 2e459fda) — husky-aware installer + WARN
+# on non-exec hook + chain-not-clobber + perms verification.
 # CF directive: customer-facing-copy-requires-product-claim-audit
 # (cf_standing_directives, severity=critical, active).
 
@@ -45,6 +47,10 @@ CUSTOMER_FACING_PATTERNS=(
   '/pages/.*\.cshtml$'
   '/Views/Home/.*\.cshtml$'
   '/Views/Shared/_Layout\.cshtml$'
+  # Next.js App Router — root page/layout + any nested route page.tsx
+  '/app/page\.tsx$'
+  '/app/layout\.tsx$'
+  '/app/.*/page\.tsx$'
 )
 
 # Files that should NOT trigger the hook even if they match above patterns.
@@ -216,31 +222,161 @@ EOF
   fi
 fi
 
-# Gate 5: MARC-APPROVED trailer must be present in the commit message.
-# Skip this check during merge / rebase / cherry-pick (commit message
-# isn't user-authored in the normal flow).
-COMMIT_MSG_FILE="${1:-.git/COMMIT_EDITMSG}"
-if [[ -z "${GIT_REFLOG_ACTION:-}" ]] || [[ "${GIT_REFLOG_ACTION:-}" == "commit"* ]]; then
-  if [[ -f "$COMMIT_MSG_FILE" ]]; then
-    if ! grep -qE '^MARC-APPROVED:' "$COMMIT_MSG_FILE"; then
-      cat >&2 <<EOF
+# Gate 5: MARC-APPROVED trailer enforcement — moved to commit-msg phase.
+# `.git/COMMIT_EDITMSG` is empty at pre-commit time, so the check used to
+# require a manual `cp` of the message before each commit. The trailer
+# check now lives in marketing-truth-commit-msg.sh which git invokes with the
+# commit-message file path as $1. See: split 2026-05-11.
 
-🛑  marketing-truth hook: customer-facing change requires
-    'MARC-APPROVED:' trailer in commit message.
+# Gate 7: Brand-name dictionary — block portfolio brand violations.
+# Reads .git-hooks/brand-name-dictionary.json (vendored by install.sh).
+# Skipped gracefully if dictionary file or python3 unavailable so a
+# parallel branch lacking the install doesn't fail spuriously.
+#
+# Introduced 2026-05-12 (CF task c7ff90b3) after the "Ingenious Limited"
+# untracked-draft finding on codehumanist 404/500. The existing gates
+# (truths.json co-stage + MARC-APPROVED trailer) structurally cannot
+# detect brand-spelling violations inside the staged file content; this
+# gate does that pattern sweep with context-aware allowlisting for
+# historical recall entries.
 
-    Add a line like:
-      MARC-APPROVED: 2026-04-30 portfolio-wide marketing-truth recall
+BRAND_DICT="${REPO_ROOT}/.git-hooks/brand-name-dictionary.json"
+if [[ -f "$BRAND_DICT" ]] && command -v python3 >/dev/null 2>&1; then
+  # Pass the dictionary + customer-facing files to python3 via env vars
+  # to avoid shell quoting issues. python3 prints offending matches one
+  # per line in the format:
+  #   FILE:LINE:SEVERITY:PATTERN -> REPLACEMENT :: REASON :: LINETEXT
+  # Exit 0 = no blockers; exit 1 = at least one BLOCKER found; exit 2 =
+  # internal error (treated as soft warn).
+  # NOTE: `set -e` would abort on `X=$(cmd)` if cmd exits non-zero, so we
+  # temporarily disable it around the capture and re-enable after.
+  set +e
+  BRAND_OUT=$(BRAND_DICT="$BRAND_DICT" BRAND_FILES="$CUSTOMER_FACING_FILES" python3 - <<'PY' 2>&1
+import json, os, re, sys
 
-    Customer-facing files in this commit:
-$(echo "$CUSTOMER_FACING_FILES" | sed 's/^/      - /')
+dict_path = os.environ["BRAND_DICT"]
+files = [f for f in os.environ.get("BRAND_FILES", "").splitlines() if f.strip()]
+
+try:
+    data = json.load(open(dict_path))
+except Exception as e:
+    print(f"WARN: failed to load brand dictionary: {e}", file=sys.stderr)
+    sys.exit(2)
+
+violations = data.get("violations", [])
+nzbn_map = data.get("nzbn_to_legal_name", {})
+
+# Pre-compile regexes once.
+compiled = []
+for v in violations:
+    pat = v.get("pattern")
+    if not pat:
+        continue
+    flags = 0 if v.get("case_sensitive", False) else re.IGNORECASE
+    try:
+        rx = re.compile(pat, flags)
+    except re.error as e:
+        print(f"WARN: bad regex {pat!r} in dict: {e}", file=sys.stderr)
+        continue
+    compiled.append((rx, v))
+
+# NZBN pattern: 13-digit NZ business number.
+nzbn_rx = re.compile(r'\b(\d{13})\b')
+
+violation_count = 0
+
+def line_in_allowlist_context(lines, lineno, allowlist, window=10):
+    if not allowlist:
+        return False
+    lo = max(0, lineno - 1 - window)
+    hi = min(len(lines), lineno + window)
+    chunk = "\n".join(lines[lo:hi]).lower()
+    return any(kw.lower() in chunk for kw in allowlist)
+
+for fpath in files:
+    if not os.path.isfile(fpath):
+        continue
+    try:
+        with open(fpath, "r", encoding="utf-8", errors="replace") as fh:
+            lines = fh.read().splitlines()
+    except Exception as e:
+        print(f"WARN: cannot read {fpath}: {e}", file=sys.stderr)
+        continue
+
+    whole_file = "\n".join(lines)
+    for idx, line in enumerate(lines, start=1):
+        for rx, v in compiled:
+            if rx.search(line):
+                allow = v.get("context_allowlist", [])
+                if allow and line_in_allowlist_context(lines, idx, allow):
+                    continue
+                severity = v.get("severity", "BLOCKER")
+                replacement = v.get("replacement", "(see dictionary)")
+                reason = v.get("reason", "")
+                snippet = line.strip()[:160]
+                # All un-allowlisted matches fail the commit. Severity is
+                # metadata for downstream reporting / triage but does not
+                # change the gate verdict.
+                print(f"{fpath}:{idx}:{severity}:{rx.pattern} -> {replacement} :: {reason} :: {snippet}")
+                violation_count += 1
+
+        # NZBN cross-check: any 13-digit number in the line that matches a
+        # known NZBN must appear alongside the canonical legal name in the
+        # file. Heuristic: if NZBN X is in this line and the canonical
+        # legal-name for X is NOT anywhere in the file, flag BLOCKER.
+        for m in nzbn_rx.finditer(line):
+            nzbn = m.group(1)
+            if nzbn in nzbn_map:
+                expected = nzbn_map[nzbn]
+                if expected not in whole_file:
+                    print(f"{fpath}:{idx}:BLOCKER:NZBN {nzbn} -> {expected} :: NZBN present but canonical legal name '{expected}' not found in same file :: {line.strip()[:160]}")
+                    violation_count += 1
+
+if violation_count > 0:
+    sys.exit(1)
+sys.exit(0)
+PY
+)
+  BRAND_RC=$?
+  set -e
+
+  if [[ $BRAND_RC -eq 1 ]]; then
+    cat >&2 <<EOF
+
+🛑  marketing-truth hook: brand-name dictionary violations found.
+
+$(echo "$BRAND_OUT" | sed 's/^/    /')
+
+    Action: fix the brand name(s) above. Common cases:
+      - "Ingenious"     → "Instilligent"
+      - "Boss Board"    → "BossBoard"
+      - "TradeMate"     → "BossBoard"     (consolidated 2026-05-11)
+      - "Our New Normal"→ "Instilligent"  (brand sunset 2026-05-02)
+      - "Cortex Forge"  → "CortexForge"
+      - Mismatched NZBN → ensure the canonical legal name appears in the same file
+
+    "Our New Normal" / "ONN" are allowed inside historical recall_history
+    entries (within ±10 lines of one of: recall_history, previous_overclaim,
+    historical, sunset).
 
     Bypass: WAIVE_MARKETING_AUDIT="<reason>" git commit ...
+
+    Source: ~/cf-research/marketing-truth-hook/brand-name-dictionary.json
+    CF task: c7ff90b3 (introduced 2026-05-12 after the "Ingenious Limited"
+    untracked-draft finding on codehumanist 404/500).
 EOF
-      exit 1
-    fi
+    exit 1
+  elif [[ $BRAND_RC -eq 2 ]]; then
+    echo "⚠️  marketing-truth hook: brand-dict gate hit an internal error — skipping (see stderr)"
+    echo "$BRAND_OUT" >&2
+  elif [[ -n "$BRAND_OUT" ]]; then
+    # Non-fatal WARN lines emitted by the python gate (e.g. bad regex in
+    # dict, file-read failure). Print as advisory; do not fail.
+    echo "⚠️  marketing-truth brand-dict (advisory warnings):" >&2
+    echo "$BRAND_OUT" | sed 's/^/    /' >&2
   fi
 fi
 
-# All gates passed.
-echo "✓ marketing-truth hook: ${TRUTHS_FILE##*/} updated, MARC-APPROVED trailer present, $(echo "$CUSTOMER_FACING_FILES" | wc -l) customer-facing file(s) gated."
+# All pre-commit gates passed.
+echo "✓ marketing-truth pre-commit: ${TRUTHS_FILE##*/} updated, $(echo "$CUSTOMER_FACING_FILES" | wc -l) customer-facing file(s) gated. (trailer check at commit-msg phase)"
 exit 0

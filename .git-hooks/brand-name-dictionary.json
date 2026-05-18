@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "last_updated": "2026-05-12",
+  "_doc": "Portfolio brand-name dictionary. Consumed by pre-commit-hook.sh Gate 7 (brand-dict gate). Source of truth: ~/cf-research/marketing-truth-hook/. Installed into each portfolio repo's .git-hooks/ via install.sh. Update procedure: edit here, then re-run install.sh on each portfolio repo (or use the portfolio re-install task).",
+  "canonical_brands": [
+    {"name": "Instilligent", "aliases": [], "nzbn": "9429051796284", "legal_name": "Instilligent Limited"},
+    {"name": "BossBoard", "aliases": ["BB"], "parent": "Instilligent"},
+    {"name": "Mastering Moss", "aliases": ["MOSS"], "parent": "Instilligent"},
+    {"name": "ModularCompliance", "aliases": ["MC"], "parent": "Instilligent"},
+    {"name": "CodeHumanist", "aliases": [], "parent": "Instilligent"},
+    {"name": "ProofOnce", "aliases": [], "parent": "Instilligent"},
+    {"name": "Instilligent Courses", "aliases": [], "parent": "Instilligent"},
+    {"name": "CortexForge", "aliases": ["CF"], "parent": "Instilligent"},
+    {"name": "GARA", "aliases": [], "parent": "Instilligent"},
+    {"name": "Flywheel", "aliases": [], "parent": "Instilligent"}
+  ],
+  "violations": [
+    {
+      "pattern": "\\bIngenious\\b",
+      "severity": "BLOCKER",
+      "reason": "Never-used; close to Instilligent typo + reads like 'lying'",
+      "replacement": "Instilligent",
+      "case_sensitive": true
+    },
+    {
+      "pattern": "\\bBoss Board\\b",
+      "severity": "BLOCKER",
+      "reason": "Wrong brand spelling (must be one word)",
+      "replacement": "BossBoard",
+      "case_sensitive": false
+    },
+    {
+      "pattern": "\\bTradeMate\\b",
+      "severity": "BLOCKER",
+      "reason": "Dead/consolidated 2026-05-11; canonical is BossBoard",
+      "replacement": "BossBoard",
+      "case_sensitive": true
+    },
+    {
+      "pattern": "\\bTrade Mate\\b",
+      "severity": "BLOCKER",
+      "reason": "Wrong brand (also dead — see TradeMate consolidation 2026-05-11)",
+      "replacement": "BossBoard",
+      "case_sensitive": false
+    },
+    {
+      "pattern": "\\bOur New Normal\\b",
+      "severity": "HIGH",
+      "reason": "Brand sunset 2026-05-02; allowed only inside historical recall_history entries",
+      "replacement": "Instilligent",
+      "case_sensitive": false,
+      "context_allowlist": ["recall_history", "previous_overclaim", "historical", "sunset"]
+    },
+    {
+      "pattern": "\\bONN\\b",
+      "severity": "MEDIUM",
+      "reason": "Sunset acronym; same as Our New Normal",
+      "replacement": "Instilligent",
+      "case_sensitive": true,
+      "context_allowlist": ["recall_history", "previous_overclaim", "historical", "sunset"]
+    },
+    {
+      "pattern": "\\bCortex Forge\\b",
+      "severity": "HIGH",
+      "reason": "Wrong spelling (one word)",
+      "replacement": "CortexForge",
+      "case_sensitive": false
+    },
+    {
+      "pattern": "\\bIntelligent Limited\\b",
+      "severity": "MEDIUM",
+      "reason": "Typo of Instilligent Limited",
+      "replacement": "Instilligent Limited",
+      "case_sensitive": false
+    }
+  ],
+  "nzbn_to_legal_name": {
+    "9429051796284": "Instilligent Limited"
+  }
+}

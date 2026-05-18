@@ -1,3 +1,10 @@
 source: /home/marc/cf-research/marketing-truth-hook
-version: 979d8a5
-installed: 2026-04-30T11:10:44Z
+version: cbe79e4
+installed: 2026-05-18T10:15:30Z
+strategy: default
+resolved_hooks_dir: .git/hooks
+components:
+  - pre-commit-hook.sh
+  - commit-msg-hook.sh
+  - marketing-truth-lint.sh
+  - brand-name-dictionary.json (hash: 3d19e76cd043)
