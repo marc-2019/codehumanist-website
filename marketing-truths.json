@@ -30,7 +30,7 @@
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited.",
-      "recall_status": "partial — apex landing 'never modifies your code' on index.html:115 retains the absolute framing as of 2026-05-12. Reframe pending Marc-decision per audit ad91eba9 (M-1)."
+      "recall_status": "verified 2026-05-19 — absolute framing retained; product is waitlist-only with zero write code paths; re-verify when analysis backend ships"
     },
     {
       "id": "codehumanist.trust.no-write",
