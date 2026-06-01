@@ -80,7 +80,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   const to = env.WAITLIST_TO || "marc@instilligent.com";
-  const from = env.WAITLIST_FROM || "CodeHumanist Waitlist <noreply@instilligent.com>";
+  const from = env.WAITLIST_FROM || "CodeHumanist Waitlist <team@codehumanist.com>";
 
   const subject = `CodeHumanist waitlist signup: ${email}`;
   const body =
