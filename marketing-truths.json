@@ -95,6 +95,15 @@
       "notes": "Created 2026-05-12 to honour the robots.txt Sitemap: declaration that previously pointed at a non-existent URL. Minimal — apex + privacy policy only. Update lastmod when adding pages."
     }
   ],
+  "product_claims": [
+    {
+      "id": "codehumanist.analytics.plausible",
+      "claim": "Privacy-friendly web analytics via Plausible - we track anonymized, aggregated usage statistics to improve the product without collecting personal data.",
+      "surfaces": ["index.html (head)"],
+      "verdict": "IMPLEMENTED",
+      "last_verified": "2026-05-25"
+    }
+  ],
   "open_items": [
     "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed (CF task mtr-2026-04-30-ch-secaudit, P1, blocked by ch-product-build).",
     "Full product backend (codebase comprehension engine) — entire product is 0→1 build. Site is honest as 'early access / waitlist'; substantive build is the next strategic decision (CF task mtr-2026-04-30-ch-product-build, P1, multi-week-month)."
