@@ -40,3 +40,6 @@ yarn.lock
 *.log
 
 .claude/
+
+# CortexForge executor artifacts (cross-tree diff captures, auto-push state)
+.cf-pending-reviews/
