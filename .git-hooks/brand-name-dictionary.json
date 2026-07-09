@@ -3,7 +3,7 @@
   "last_updated": "2026-05-12",
   "_doc": "Portfolio brand-name dictionary. Consumed by pre-commit-hook.sh Gate 7 (brand-dict gate). Source of truth: ~/cf-research/marketing-truth-hook/. Installed into each portfolio repo's .git-hooks/ via install.sh. Update procedure: edit here, then re-run install.sh on each portfolio repo (or use the portfolio re-install task).",
   "canonical_brands": [
-    {"name": "Instilligent", "aliases": [], "nzbn": "9429051796284", "legal_name": "Instilligent Limited"},
+    {"name": "Instilligent", "aliases": [], "nzbn": "9429041896853", "legal_name": "Instilligent Limited"},
     {"name": "BossBoard", "aliases": ["BB"], "parent": "Instilligent"},
     {"name": "Mastering Moss", "aliases": ["MOSS"], "parent": "Instilligent"},
     {"name": "ModularCompliance", "aliases": ["MC"], "parent": "Instilligent"},
@@ -75,6 +75,6 @@
     }
   ],
   "nzbn_to_legal_name": {
-    "9429051796284": "Instilligent Limited"
+    "9429041896853": "Instilligent Limited"
   }
 }
