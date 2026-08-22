@@ -1,13 +1,10 @@
 # CodeHumanist
 
-> Read-only codebase comprehension platform for human stakeholders. Understand
-> AI-generated codebases — architecture, data flows, use cases — without
-> touching a line of code. AI writes the code; you still need to know what it
-> does, how it's structured, and where the risk sits.
+Early access / waitlist: a read-only codebase comprehension platform for human stakeholders.
 
 ## About
 
-CodeHumanist is a SaaS platform from Instilligent Limited (NZ) for the people
+CodeHumanist is in early access (waitlist) from Instilligent Limited (NZ) for the people
 who matter most to a business but can't read code: founders reviewing what
 their AI-built product actually does, product managers reasoning about a
 codebase they didn't write, compliance officers auditing AI-generated systems,

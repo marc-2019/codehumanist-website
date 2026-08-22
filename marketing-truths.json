@@ -11,31 +11,51 @@
     {
       "id": "codehumanist.status",
       "claim": "Early access / waitlist — CodeHumanist is in early access. Join the waitlist to get first access when we launch.",
-      "surfaces": ["index.html (CTA section)", "instilligent.com portfolio (Waitlist badge per PR #2)"],
+      "surfaces": [
+        "index.html (CTA section)",
+        "instilligent.com portfolio (Waitlist badge per PR #2)"
+      ],
       "verdict": "ACCURATE",
       "last_verified": "2026-05-01"
     },
     {
       "id": "codehumanist.positioning",
-      "claim": "Read-only codebase comprehension platform for human stakeholders — architecture, data flows and use cases for stakeholders who don't read code",
-      "surfaces": ["index.html (hero)", "llms.txt", "instilligent.com JSON-LD"],
+      "claim": "CodeHumanist is in early access. Join the waitlist for a read-only codebase comprehension platform for human stakeholders.",
+      "surfaces": [
+        "index.html (hero, footer tagline, meta/og/twitter description)"
+      ],
       "verdict": "PLANNED",
-      "last_verified": "2026-05-01",
-      "notes": "Positioning of intended product. Acceptable while in early-access framing."
+      "last_verified": "2026-08-23",
+      "notes": "Positioning of intended product. Acceptable only in early-access / waitlist framing. Not a shipped platform. Claim string is the exact hero/footer sentence so COMPLY substring-match binds."
+    },
+    {
+      "id": "codehumanist.positioning.llms",
+      "claim": "Early access / waitlist: a read-only codebase comprehension platform for human stakeholders.",
+      "surfaces": [
+        "llms.txt"
+      ],
+      "verdict": "PLANNED",
+      "last_verified": "2026-08-23",
+      "notes": "llms.txt opener on one line. COMPLY splits on newlines; do not wrap or prefix with >."
     },
     {
       "id": "codehumanist.trust.read-only",
       "claim": "Read-only by design. CodeHumanist is built to be read-only — repository connections request read scopes only.",
-      "surfaces": ["index.html#L293-294 (trust section)", "pages/privacy.html#L185, L209, L311"],
+      "surfaces": [
+        "index.html#L293-294 (trust section)",
+        "pages/privacy.html#L185, L209, L311"
+      ],
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited.",
-      "recall_status": "partial — apex landing 'never modifies your code' on index.html:115 retains the absolute framing as of 2026-05-12. Reframe pending Marc-decision per audit ad91eba9 (M-1)."
+      "recall_status": "partial — apex landing still uses architectural 'never modified' framing on the highlight stat; re-verify when analysis backend ships"
     },
     {
       "id": "codehumanist.trust.no-write",
       "claim": "No write access (by design). Repository OAuth tokens are requested at read scope only. Audit pending.",
-      "surfaces": ["index.html#L305-306"],
+      "surfaces": [
+        "index.html#L305-306"
+      ],
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'No write access — Repository connections are read-only at the API level'. Same reframe."
@@ -43,7 +63,9 @@
     {
       "id": "codehumanist.trust.no-execution",
       "claim": "No code execution (by design). The platform performs static analysis only — your code is never run in our environment.",
-      "surfaces": ["index.html#L316-317"],
+      "surfaces": [
+        "index.html#L316-317"
+      ],
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
       "previous_overclaim": "Was 'No code execution — We analyse structure, not runtime behaviour'. Strengthened the explanation while adding 'by design' qualifier."
@@ -51,7 +73,9 @@
     {
       "id": "codehumanist.trust.data-exports",
       "claim": "Your data, your exports. All generated documentation is yours to download and keep.",
-      "surfaces": ["index.html#L326-327"],
+      "surfaces": [
+        "index.html#L326-327"
+      ],
       "verdict": "PLANNED",
       "last_verified": "2026-05-01",
       "notes": "Acceptable for early access. Verify file:line export functionality in next audit pass."
@@ -59,7 +83,10 @@
     {
       "id": "codehumanist.feature.waitlist-backend",
       "claim": "Waitlist signup with real email delivery — Cloudflare Pages Function routes submissions to Resend, no client-side-only deception.",
-      "surfaces": ["index.html (hero + cta forms)", "functions/api/waitlist.ts"],
+      "surfaces": [
+        "index.html (hero + cta forms)",
+        "functions/api/waitlist.ts"
+      ],
       "code_references": [
         "functions/api/waitlist.ts (Cloudflare Pages Function → Resend)",
         "js/main.js (initWaitlist — POST /api/waitlist)"
@@ -72,7 +99,9 @@
     {
       "id": "codehumanist.stat.zero-lines-changed",
       "claim": "Read-only by design — your codebase is never modified by our analysis (intended architecture, independent audit pending)",
-      "surfaces": ["index.html#L143-146 (highlight stat card)"],
+      "surfaces": [
+        "index.html#L143-146 (highlight stat card)"
+      ],
       "verdict": "INTENDED ARCHITECTURE",
       "last_verified": "2026-05-01",
       "notes": "Promoted from shipped_post_audit 2026-05-01. Reframed the original '0 lines of code changed by CodeHumanist — ever' counter (which would become false on first production usage) into a durable architectural-promise framing consistent with the trust pillars. Visual treatment (highlight stat-card) preserved.",
@@ -81,7 +110,10 @@
     {
       "id": "codehumanist.support.error-pages",
       "claim": "Generic error-page UX (404 / 500) with brand chrome + return-home + waitlist/support links. No product claims. Brand strings use canonical 'Instilligent Limited' and asset paths are absolute (work on non-root URLs).",
-      "surfaces": ["404.html", "500.html"],
+      "surfaces": [
+        "404.html",
+        "500.html"
+      ],
       "verdict": "IMPLEMENTED",
       "last_verified": "2026-05-12",
       "notes": "Support surfaces enumerated for marketing-truth coverage per audit ad91eba9. Pages carry only generic error UX, footer brand ('Instilligent Limited' x3 in each), and contact links. Consolidated landing 2026-05-12 corrected a pre-merge non-canonical brand string to canonical 'Instilligent Limited' (audit ad91eba9 F-1, per feedback_brand_names.md + FTA s13(d)) and converted relative asset hrefs to absolute paths (audit ad91eba9 F-4) so the pages render correctly when served on non-root URLs."
@@ -89,10 +121,39 @@
     {
       "id": "codehumanist.seo.sitemap",
       "claim": "XML sitemap at /sitemap.xml enumerating apex (/) and privacy policy. Referenced by robots.txt:69.",
-      "surfaces": ["sitemap.xml", "robots.txt"],
+      "surfaces": [
+        "sitemap.xml",
+        "robots.txt"
+      ],
       "verdict": "IMPLEMENTED",
       "last_verified": "2026-05-12",
       "notes": "Created 2026-05-12 to honour the robots.txt Sitemap: declaration that previously pointed at a non-existent URL. Minimal — apex + privacy policy only. Update lastmod when adding pages."
+    },
+    {
+      "id": "company.legal-identity",
+      "claim": "Operated by Instilligent Limited (NZ company 5775307, NZBN 9429041896853).",
+      "surfaces": [
+        "site footer",
+        "legal/privacy pages"
+      ],
+      "evidence_references": [
+        "Certificate of Incorporation, NZ Companies Office, 27 Sep 2024 — company 5775307, NZBN 9429041896853"
+      ],
+      "verdict": "ACCURATE",
+      "last_verified": "2026-06-19"
+    },
+    {
+      "id": "company.nzbn-footer",
+      "claim": "© 2026 Instilligent Limited · NZBN 9429041896853 · info@instilligent.com",
+      "surfaces": [
+        "index.html footer-legal"
+      ],
+      "evidence_references": [
+        "Certificate of Incorporation, NZ Companies Office, 27 Sep 2024 — company 5775307, NZBN 9429041896853 (~/onedrive/Company Registry Info/CertIncorporation_5775307_27September2024.pdf)"
+      ],
+      "verdict": "ACCURATE",
+      "last_verified": "2026-08-22",
+      "notes": "Exact footer string COMPLY extracted as claim_without_evidence. Same registered NZBN already evidenced on BossBoard/Courses truths. Added so the claim-audit matcher can bind the live footer."
     }
   ],
   "open_items": [
