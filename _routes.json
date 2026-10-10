@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "include": [
+    "/api/*",
+    "/.git-hooks/*",
+    "/.git/*",
+    "/.github/*",
+    "/.claude/*",
+    "/.wrangler/*",
+    "/functions/*",
+    "/tests/*",
+    "/docs/*",
+    "/tools/*",
+    "/.gitignore",
+    "/.nojekyll",
+    "/marketing-truths.json",
+    "/_routes.json",
+    "/DEPLOYMENT.md",
+    "/README.md"
+  ],
+  "exclude": []
+}
