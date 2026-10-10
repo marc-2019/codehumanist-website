@@ -88,9 +88,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     `\n` +
     `Email:  ${email}\n` +
     `Source: ${source} (form id on the site)\n` +
-    `IP:     ${request.headers.get("CF-Connecting-IP") || "unknown"}\n` +
-    `UA:     ${(request.headers.get("User-Agent") || "").slice(0, 200)}\n` +
-    `Ref:    ${request.headers.get("Referer") || "(none)"}\n` +
     `\n` +
     `--\n` +
     `Sent from codehumanist.com /api/waitlist Pages Function.\n` +

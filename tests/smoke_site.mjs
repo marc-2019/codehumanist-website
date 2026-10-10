@@ -141,6 +141,13 @@ test('waitlist error responses do not echo the upstream body', () => {
   assert.doesNotMatch(src, /name\?:/);
 });
 
+test('waitlist notification body keeps email and source, not IP, user agent, or referrer', () => {
+  const src = read('functions/api/waitlist.ts');
+  assert.match(src, /Email:  \$\{email\}/);
+  assert.match(src, /Source: \$\{source\}/);
+  assert.doesNotMatch(src, /CF-Connecting-IP|User-Agent|Referer|`IP:|`UA:|`Ref:/);
+});
+
 test('normaliser blocks encoded paths, slash variants, tests/*, and trailing-dot or semicolon aliases', () => {
   assert.equal(normalizePath('/marketing-truths.json.'), '/marketing-truths.json');
   assert.equal(normalizePath('/marketing-truths.json%2e'), '/marketing-truths.json');
