@@ -7,14 +7,14 @@ Early access / waitlist: a read-only codebase comprehension platform for human s
 CodeHumanist is in early access (waitlist) from Instilligent Limited (NZ) for the people
 who matter most to a business but can't read code: founders reviewing what
 their AI-built product actually does, product managers reasoning about a
-codebase they didn't write, compliance officers auditing AI-generated systems,
+codebase they didn't write, compliance reviewers looking at AI-generated systems,
 investors doing technical due diligence, and operators inheriting handoff from
 a vibe-coding sprint.
 
 Vibe coding and AI-generated software changed who writes the code — but not
-who needs to understand it. CodeHumanist closes that gap.
+who needs to understand it. CodeHumanist is being built to close that gap.
 
-## What it does
+## What we're building (planned)
 
 - **System Overview** — plain-English summary of what your codebase does, its
   core purpose, and how all the pieces fit together. No jargon, no assumptions.
@@ -39,9 +39,8 @@ Currently in waitlist phase. Visit https://codehumanist.com to join.
 
 ## Built by
 
-Instilligent Limited — https://instilligent.com — NZ AI consultancy and
-product studio. We build production AI software for regulated industries
-across NZ, Australia, and Southeast Asia.
+Instilligent Limited — https://instilligent.com — New Zealand software company
+building practical software for regulated industries.
 
 ## Contact
 

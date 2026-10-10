@@ -88,9 +88,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     `\n` +
     `Email:  ${email}\n` +
     `Source: ${source} (form id on the site)\n` +
-    `IP:     ${request.headers.get("CF-Connecting-IP") || "unknown"}\n` +
-    `UA:     ${(request.headers.get("User-Agent") || "").slice(0, 200)}\n` +
-    `Ref:    ${request.headers.get("Referer") || "(none)"}\n` +
     `\n` +
     `--\n` +
     `Sent from codehumanist.com /api/waitlist Pages Function.\n` +
@@ -113,16 +110,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       }),
     });
   } catch (err) {
-    return json(502, { error: "upstream send failed", detail: String(err).slice(0, 200) });
+    console.error("waitlist upstream send failed", String(err).slice(0, 200));
+    return json(502, { error: "Could not save your signup. Please try again later." });
   }
 
   if (!resendResp.ok) {
     const detail = await resendResp.text().catch(() => "");
-    return json(502, {
-      error: "send failed",
-      status: resendResp.status,
-      detail: detail.slice(0, 300),
-    });
+    console.error("waitlist send failed", resendResp.status, detail.slice(0, 300));
+    return json(502, { error: "Could not save your signup. Please try again later." });
   }
 
   return json(200, { ok: true });
