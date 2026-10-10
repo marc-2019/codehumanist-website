@@ -123,10 +123,14 @@ test('privacy banner matches the waitlist fields (email, not name)', () => {
   const t = read('pages/privacy.html');
   assert.match(t, /CodeHumanist is not yet available\. Today the waitlist sign-up collects an email address/);
   assert.match(t, /Summary — planned product, at launch/);
-  assert.match(t, /Planned, at launch: we do/);
+  assert.match(t, /Planned, at launch:/);
+  assert.match(t, /we intend to connect to your code repositories/);
   assert.match(t, /We intend to add encryption at rest/);
   assert.match(t, /when CodeHumanist launches/);
   assert.doesNotMatch(t, /unsubscribe/i);
+  assert.doesNotMatch(t, /prose\.css/);
+  assert.doesNotMatch(t, /we connect to your code/i);
+  assert.doesNotMatch(t, /We do not modify your code\. Ever/);
 });
 
 test('waitlist error responses do not echo the upstream body', () => {
