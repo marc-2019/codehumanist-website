@@ -79,6 +79,25 @@ const TESTS_PATHS = [
   '/%74ests/smoke_site.mjs',
 ];
 
+const FUNCTION_PATHS = [
+  '/functions/block_path.js',
+  '/functions/_middleware.ts',
+  '/functions/api/waitlist.ts',
+];
+
+const PUBLIC_EXACT = [
+  '/',
+  '/index.html',
+  '/404.html',
+  '/500.html',
+  '/pages/privacy.html',
+  '/css/style.css',
+  '/js/main.js',
+  '/llms.txt',
+  '/robots.txt',
+  '/sitemap.xml',
+];
+
 const INDEX_PRESENT_TENSE = [
   ['never modified', /never modified/i],
   ['we connect', /\bwe connect\b/i],
@@ -106,6 +125,7 @@ test('privacy banner matches the waitlist fields (email, not name)', () => {
   assert.match(t, /Summary — planned product, at launch/);
   assert.match(t, /Planned, at launch: we do/);
   assert.match(t, /We intend to add encryption at rest/);
+  assert.match(t, /when CodeHumanist launches/);
   assert.doesNotMatch(t, /unsubscribe/i);
 });
 
@@ -125,7 +145,7 @@ test('normaliser blocks encoded paths, slash variants, tests/*, and trailing-dot
   assert.equal(normalizePath('///tests//smoke_site.mjs'), '/tests/smoke_site.mjs');
   assert.equal(normalizePath('/%252egitignore'), '/.gitignore');
 
-  const blocked = [...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS, '/marketing-truths.bak'];
+  const blocked = [...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS, ...FUNCTION_PATHS, '/marketing-truths.bak'];
   for (const p of blocked) {
     assert.equal(isBlockedPath(p), true, p);
   }
@@ -137,23 +157,13 @@ test('normaliser blocks encoded paths, slash variants, tests/*, and trailing-dot
 test('publish routes invoke the middleware for everything except real static assets', () => {
   const routes = JSON.parse(read('_routes.json'));
   assert.deepEqual(routes.include, ['/*']);
-  for (const rule of ['/css/*', '/js/*', '/pages/*', '/llms.txt', '/robots.txt', '/sitemap.xml', '/favicon.ico']) {
-    assert.ok(routes.exclude.includes(rule), `missing exclude ${rule}`);
+  assert.deepEqual(routes.exclude, PUBLIC_EXACT);
+  assert.equal(routes.exclude.some((rule) => rule.includes('*')), false);
+  assert.equal(existsSync(new URL('../wrangler.toml', import.meta.url)), false);
+  for (const p of FUNCTION_PATHS) {
+    assert.equal(routes.exclude.includes(p), false, p);
+    assert.equal(isBlockedPath(p), true, p);
   }
-  for (const p of [...BLOCKED, ...ENCODED_BLOCKED]) {
-    assert.equal(routes.exclude.includes(p), false, `exclude must not skip ${p}`);
-  }
-  for (const rule of routes.exclude) {
-    assert.equal(rule.startsWith('/*.'), false, `extension wildcard exclude skips middleware: ${rule}`);
-  }
-  const matchesExclude = (pathname) => routes.exclude.some((rule) => {
-    if (rule.endsWith('/*')) return pathname.startsWith(rule.slice(0, -1));
-    return rule === pathname;
-  });
-  assert.equal(matchesExclude('/functions/block_path.js'), false);
-  assert.equal(matchesExclude('/css/style.css'), true);
-  assert.equal(matchesExclude('/js/main.js'), true);
-  assert.equal(isBlockedPath('/functions/block_path.js'), true);
   const mw = read('functions/_middleware.ts');
   assert.match(mw, /isBlockedPath/);
   assert.match(read('functions/block_path.js'), /decodeURIComponent/);
@@ -176,7 +186,7 @@ test('stage-publish copies only the public allow-list', () => {
 
 test('live: blocked, encoded, slash, and tests paths return 404; public pages 200', { skip: process.env.LIVE !== '1' }, async () => {
   const base = process.env.BASE_URL || 'https://codehumanist.com';
-  const blocked = [...new Set([...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS])];
+  const blocked = [...new Set([...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS, ...FUNCTION_PATHS])];
   for (const p of blocked) {
     const r = await fetch(base + p, { redirect: 'manual' });
     assert.equal(r.status, 404, `${p} -> ${r.status}`);

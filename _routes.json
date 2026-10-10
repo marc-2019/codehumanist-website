@@ -6,17 +6,11 @@
     "/index.html",
     "/404.html",
     "/500.html",
-    "/pages/*",
-    "/css/*",
-    "/js/*",
-    "/images/*",
-    "/img/*",
-    "/fonts/*",
+    "/pages/privacy.html",
+    "/css/style.css",
+    "/js/main.js",
     "/llms.txt",
     "/robots.txt",
-    "/sitemap.xml",
-    "/favicon.ico",
-    "/favicon.png",
-    "/favicon.svg"
+    "/sitemap.xml"
   ]
 }
