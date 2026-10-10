@@ -109,6 +109,12 @@
       line-height: 1.7;
     }
 
+    .prose .notice-box--prelaunch {
+      border-color: var(--purple-300);
+      background: rgba(192, 132, 252, 0.14);
+      color: var(--text-primary);
+    }
+
     .prose table {
       width: 100%;
       border-collapse: collapse;
@@ -181,8 +187,10 @@
 
       <article class="prose">
 
+        <p class="notice-box notice-box--prelaunch" role="note">CodeHumanist is not yet available. Today the waitlist sign-up collects an email address so we can tell you about launch.</p>
+
         <div class="notice-box">
-          <strong>Summary:</strong> CodeHumanist is a read-only platform. We collect your email address to manage waitlist communications, and we connect to your code repositories with read-only access to generate comprehension reports. We do not sell your data. We do not modify your code. Ever.
+          <strong>Summary — planned product, at launch:</strong> CodeHumanist is a read-only platform. We collect your email address to manage waitlist communications, and we connect to your code repositories with read-only access to generate comprehension reports. We do not sell your data. We do not modify your code. Ever.
         </div>
 
         <h2>1. Who We Are</h2>
@@ -267,9 +275,9 @@
         <h2>4. What We Do Not Do</h2>
         <ul>
           <li>We do <strong>not</strong> sell, rent, or trade your personal data to third parties</li>
-          <li>We do <strong>not</strong> modify, write to, or execute code in your repositories</li>
+          <li>Planned, at launch: we do <strong>not</strong> modify, write to, or execute code in your repositories</li>
           <li>We do <strong>not</strong> use your repository data to train AI models without your explicit consent</li>
-          <li>We do <strong>not</strong> share your repository data with other customers</li>
+          <li>Planned, at launch: we do <strong>not</strong> share your repository data with other customers</li>
         </ul>
 
         <h2>5. Data Sharing</h2>
@@ -308,7 +316,7 @@
         <p>Instilligent Limited is based in New Zealand. New Zealand has been recognised as providing adequate data protection under applicable international frameworks. Where we transfer data to service providers outside New Zealand, we ensure appropriate safeguards are in place, such as standard contractual clauses or equivalent mechanisms.</p>
 
         <h2>9. Security</h2>
-        <p>We implement industry-standard security measures including encryption in transit (TLS), encryption at rest, access controls, and regular security reviews. Repository access tokens are stored with encryption and are scoped to read-only permissions.</p>
+        <p>The waitlist site is served over HTTPS. We intend to add encryption at rest, access controls, and regular security reviews before launch. We intend to store any future repository access tokens with encryption and scope them to read-only permissions.</p>
         <p>No method of transmission over the internet is 100% secure. In the event of a data breach, we will notify affected users as required by applicable law.</p>
 
         <h2>10. Cookies</h2>

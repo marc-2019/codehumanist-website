@@ -2,7 +2,10 @@
 // Optional live check (read-only GETs): LIVE=1 node --test tests/smoke_site.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { isBlockedPath, normalizePath } from '../functions/block_path.js';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
@@ -49,28 +52,131 @@ const BLOCKED = [
   '/marketing-truths.json', '/tests/smoke_site.mjs', '/functions/api/waitlist.ts', '/_routes.json',
 ];
 
-test('publish-root leak: _routes.json + middleware cover every blocked path', () => {
-  const routes = JSON.parse(read('_routes.json'));
-  const mw = read('functions/_middleware.ts');
-  assert.ok(routes.include.includes('/api/*'), 'waitlist Function route must stay included');
-  const covered = (p) => routes.include.some((r) => (r.endsWith('/*') ? p.startsWith(r.slice(0, -1)) : r === p));
-  for (const p of BLOCKED) {
-    assert.ok(covered(p), `_routes.json does not include ${p}`);
-    const inMw = p.split('/').length > 2
-      ? mw.includes(`"/${p.split('/')[1]}/"`)
-      : mw.includes(`"${p}"`);
-    assert.ok(inMw, `functions/_middleware.ts does not block ${p}`);
+const ENCODED_BLOCKED = [
+  '/%2egitignore',
+  '/%2Enojekyll',
+  '/%6Darketing-truths.json',
+  '/.git-hooks%2FREADME.md',
+  '/.GIT-HOOKS/README.md',
+  '/marketing-truths.json.',
+  '/marketing-truths.json%2e',
+  '/.gitignore%3b',
+];
+
+const SLASH_VARIANTS = [
+  '//.gitignore',
+  '///.gitignore',
+  '/.git-hooks//README.md',
+  '//tests/smoke_site.mjs',
+  '/tests//smoke_site.mjs',
+];
+
+const TESTS_PATHS = [
+  '/tests/smoke_site.mjs',
+  '/tests/',
+  '/tests',
+  '//tests/smoke_site.mjs',
+  '/%74ests/smoke_site.mjs',
+];
+
+const INDEX_PRESENT_TENSE = [
+  ['never modified', /never modified/i],
+  ['we connect', /\bwe connect\b/i],
+  ['is built to be', /is built to be/i],
+  ['tokens are requested', /tokens are requested/i],
+  ['audit pending', /audit pending/i],
+  ['static analysis (by design)', /static analysis \(by design\)/i],
+  ['security audit has not', /security audit has not/i],
+  ['it reads your code', /it reads your code/i],
+];
+
+test('index.html: present-tense live-product claims absent', () => {
+  const t = read('index.html');
+  const hits = INDEX_PRESENT_TENSE.filter(([, re]) => re.test(t)).map(([n]) => n);
+  assert.deepEqual(hits, [], `index.html contains: ${hits.join(', ')}`);
+  assert.match(t, /Planned read-only analysis/);
+  assert.match(t, /Designed to be read-only/);
+  assert.match(t, /is planned as a read-only platform/);
+  assert.match(t, /we intend to connect/);
+});
+
+test('privacy banner matches the waitlist fields (email, not name)', () => {
+  const t = read('pages/privacy.html');
+  assert.match(t, /CodeHumanist is not yet available\. Today the waitlist sign-up collects an email address/);
+  assert.match(t, /Summary — planned product, at launch/);
+  assert.match(t, /Planned, at launch: we do/);
+  assert.match(t, /We intend to add encryption at rest/);
+});
+
+test('waitlist error responses do not echo the upstream body', () => {
+  const src = read('functions/api/waitlist.ts');
+  assert.match(src, /Could not save your signup/);
+  assert.doesNotMatch(src, /detail:/);
+  assert.match(src, /email\?:/);
+  assert.doesNotMatch(src, /name\?:/);
+});
+
+test('normaliser blocks encoded paths, slash variants, tests/*, and trailing-dot or semicolon aliases', () => {
+  assert.equal(normalizePath('/marketing-truths.json.'), '/marketing-truths.json');
+  assert.equal(normalizePath('/marketing-truths.json%2e'), '/marketing-truths.json');
+  assert.equal(normalizePath('/.gitignore%3b'), '/.gitignore');
+  assert.equal(normalizePath('//.GITIGNORE'), '/.gitignore');
+  assert.equal(normalizePath('///tests//smoke_site.mjs'), '/tests/smoke_site.mjs');
+  assert.equal(normalizePath('/%252egitignore'), '/.gitignore');
+
+  const blocked = [...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS, '/marketing-truths.bak'];
+  for (const p of blocked) {
+    assert.equal(isBlockedPath(p), true, p);
+  }
+  for (const p of ['/', '/llms.txt', '/pages/privacy.html', '/css/style.css', '/api/waitlist', '/index.html', '/robots.txt']) {
+    assert.equal(isBlockedPath(p), false, p);
   }
 });
 
-test('live: blocked paths return 404, homepage and llms.txt 200', { skip: process.env.LIVE !== '1' }, async () => {
+test('publish routes invoke the middleware for everything except real static assets', () => {
+  const routes = JSON.parse(read('_routes.json'));
+  assert.deepEqual(routes.include, ['/*']);
+  for (const rule of ['/css/*', '/js/*', '/pages/*', '/llms.txt', '/robots.txt', '/sitemap.xml', '/favicon.ico']) {
+    assert.ok(routes.exclude.includes(rule), `missing exclude ${rule}`);
+  }
+  for (const p of [...BLOCKED, ...ENCODED_BLOCKED]) {
+    assert.equal(routes.exclude.includes(p), false, `exclude must not skip ${p}`);
+  }
+  const mw = read('functions/_middleware.ts');
+  assert.match(mw, /isBlockedPath/);
+  assert.match(read('functions/block_path.js'), /decodeURIComponent/);
+  assert.match(read('functions/block_path.js'), /marketing-truths/);
+});
+
+test('stage-publish copies only the public allow-list', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  const r = spawnSync(process.execPath, ['scripts/stage-publish.mjs'], { cwd: root, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr || r.stdout);
+  const dist = new URL('../dist/', import.meta.url);
+  for (const rel of ['index.html', 'css/style.css', 'js/main.js', 'pages/privacy.html', 'llms.txt', 'robots.txt', 'sitemap.xml', '_routes.json']) {
+    assert.equal(existsSync(new URL(rel, dist)), true, rel);
+  }
+  for (const rel of ['marketing-truths.json', '.gitignore', 'tests/smoke_site.mjs', 'functions/api/waitlist.ts', '.git-hooks/README.md', 'scripts/stage-publish.mjs']) {
+    assert.equal(existsSync(new URL(rel, dist)), false, rel);
+  }
+  rmSync(dist, { recursive: true, force: true });
+});
+
+test('live: blocked, encoded, slash, and tests paths return 404; public pages 200', { skip: process.env.LIVE !== '1' }, async () => {
   const base = process.env.BASE_URL || 'https://codehumanist.com';
-  for (const p of BLOCKED) {
+  const blocked = [...new Set([...BLOCKED, ...ENCODED_BLOCKED, ...SLASH_VARIANTS, ...TESTS_PATHS])];
+  for (const p of blocked) {
     const r = await fetch(base + p, { redirect: 'manual' });
     assert.equal(r.status, 404, `${p} -> ${r.status}`);
   }
-  for (const p of ['/', '/llms.txt']) {
-    const r = await fetch(base + p);
+  for (const p of ['/', '/llms.txt', '/css/style.css']) {
+    const r = await fetch(base + p, { redirect: 'manual' });
     assert.equal(r.status, 200, `${p} -> ${r.status}`);
   }
+  const privacy = await fetch(base + '/pages/privacy.html', { redirect: 'manual' });
+  assert.ok(privacy.status === 200 || privacy.status === 308, `/pages/privacy.html -> ${privacy.status}`);
+  const opt = await fetch(base + '/api/waitlist', { method: 'OPTIONS', redirect: 'manual' });
+  assert.equal(opt.status, 204, `OPTIONS /api/waitlist -> ${opt.status}`);
+  const get = await fetch(base + '/api/waitlist', { method: 'GET', redirect: 'manual' });
+  assert.equal(get.status, 405, `GET /api/waitlist -> ${get.status}`);
 });

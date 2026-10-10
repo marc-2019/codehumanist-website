@@ -1,0 +1,16 @@
+# Cloudflare Pages configuration.
+#
+# This project has no Wrangler file today, so the dashboard is still the
+# source of truth until Pages is opted into Wrangler configuration.
+# Do not treat a push of this file as switching production by itself.
+#
+# Needs Marc, before opt-in or before changing the dashboard:
+#   Build command: node scripts/stage-publish.mjs
+#   Build output directory: dist
+# Confirm RESEND_API_KEY (and any other dashboard env vars) still apply
+# to the waitlist function after opt-in. Functions stay at /functions,
+# not inside dist/.
+
+name = "codehumanist-website"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-10"

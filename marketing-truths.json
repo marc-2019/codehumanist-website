@@ -40,45 +40,41 @@
     },
     {
       "id": "codehumanist.trust.read-only",
-      "claim": "Read-only by design. CodeHumanist is built to be read-only — repository connections request read scopes only.",
+      "claim": "Designed to be read-only. CodeHumanist is planned as a read-only platform — repository connections would use read scopes only.",
       "surfaces": [
-        "index.html#L293-294 (trust section)",
-        "pages/privacy.html#L185, L209, L311"
+        "index.html (trust section, planned tense)",
+        "pages/privacy.html (summary prefixed as planned product, at launch)"
       ],
-      "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-05-01",
-      "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Reframed 2026-04-30 to 'by design' + 'audit pending' framing because no independent third-party security audit has been performed yet. Architecturally read-only is true (OAuth scopes), but the absolute promise was unaudited.",
-      "recall_status": "partial — apex landing still uses architectural 'never modified' framing on the highlight stat; re-verify when analysis backend ships"
+      "verdict": "PLANNED",
+      "last_verified": "2026-10-10",
+      "previous_overclaim": "Was 'CodeHumanist is read-only. It never modifies your code.' Then 'by design' plus 'audit pending' on the marketing page. 2026-10-10 removed the trust-pillar catalogue from index.html. The privacy policy body is still written as a shipped SaaS and needs a Marc rewrite.",
+      "recall_status": "marketing page now planned-tense only; full privacy rewrite still open"
     },
     {
       "id": "codehumanist.trust.no-write",
-      "claim": "No write access (by design). Repository OAuth tokens are requested at read scope only. Audit pending.",
+      "claim": "When available, we intend to connect with read-scope OAuth tokens to generate explanations, not changes.",
       "surfaces": [
-        "index.html#L305-306"
+        "index.html (trust section)"
       ],
-      "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-05-01",
+      "verdict": "PLANNED",
+      "last_verified": "2026-10-10",
       "previous_overclaim": "Was 'No write access — Repository connections are read-only at the API level'. Same reframe."
     },
     {
       "id": "codehumanist.trust.no-execution",
-      "claim": "No code execution (by design). The platform performs static analysis only — your code is never run in our environment.",
-      "surfaces": [
-        "index.html#L316-317"
-      ],
-      "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-05-01",
+      "claim": "Static analysis was removed from the marketing page on 2026-10-10. Not a current customer-facing claim.",
+      "surfaces": [],
+      "verdict": "PLANNED",
+      "last_verified": "2026-10-10",
       "previous_overclaim": "Was 'No code execution — We analyse structure, not runtime behaviour'. Strengthened the explanation while adding 'by design' qualifier."
     },
     {
       "id": "codehumanist.trust.data-exports",
       "claim": "Your data, your exports. All generated documentation is yours to download and keep.",
-      "surfaces": [
-        "index.html#L326-327"
-      ],
+      "surfaces": [],
       "verdict": "PLANNED",
-      "last_verified": "2026-05-01",
-      "notes": "Acceptable for early access. Verify file:line export functionality in next audit pass."
+      "last_verified": "2026-10-10",
+      "notes": "Removed from the marketing page on 2026-10-10 with the trust-pillar catalogue. Still the intended export behaviour once the product exists. Not a current customer-facing sentence."
     },
     {
       "id": "codehumanist.feature.waitlist-backend",
@@ -98,13 +94,13 @@
     },
     {
       "id": "codehumanist.stat.zero-lines-changed",
-      "claim": "Read-only by design — your codebase is never modified by our analysis (intended architecture, independent audit pending)",
+      "claim": "Planned read-only analysis of an AI-built codebase.",
       "surfaces": [
-        "index.html#L143-146 (highlight stat card)"
+        "index.html (highlight stat card)"
       ],
-      "verdict": "INTENDED ARCHITECTURE",
-      "last_verified": "2026-05-01",
-      "notes": "Promoted from shipped_post_audit 2026-05-01. Reframed the original '0 lines of code changed by CodeHumanist — ever' counter (which would become false on first production usage) into a durable architectural-promise framing consistent with the trust pillars. Visual treatment (highlight stat-card) preserved.",
+      "verdict": "PLANNED",
+      "last_verified": "2026-10-10",
+      "notes": "2026-10-10 replaced the 'never modified / audit pending' stat with planned-product wording. The highlight card remains; it no longer states a security result.",
       "previous_overclaim": "Was '0 lines of code changed by CodeHumanist — ever'. Reframed 2026-05-01 because the absolute count would become false on first production analysis."
     },
     {
@@ -157,7 +153,10 @@
     }
   ],
   "open_items": [
-    "Independent third-party security audit — required before general availability per the new 'audit pending' framing in the trust section. Audit results must be linked from the trust section once available, OR the 'by design' qualifier removed (CF task mtr-2026-04-30-ch-secaudit, P1, blocked by ch-product-build).",
+    "Independent third-party security audit — still required before general availability. The marketing page no longer carries an audit-pending catalogue (2026-10-10). Do not put that catalogue back (CF task mtr-2026-04-30-ch-secaudit, P1, blocked by ch-product-build).",
+    "Privacy policy still describes a shipped SaaS (accounts, subscriptions, repository processing). 2026-10-10 added a waitlist banner and minimal planned/at-launch prefixes only. Full rewrite is for Marc.",
+    "Waitlist email does not include an unsubscribe link. Privacy policy still promises one (pages/privacy.html retention and rights). Needs Marc.",
+    "Waitlist function has no rate limit (honeypot only). Needs Marc. Do not add one without an explicit ask.",
     "Full product backend (codebase comprehension engine) — entire product is 0→1 build. Site is honest as 'early access / waitlist'; substantive build is the next strategic decision (CF task mtr-2026-04-30-ch-product-build, P1, multi-week-month)."
   ],
   "shipped_post_audit": [],

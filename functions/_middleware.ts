@@ -1,38 +1,14 @@
 // Cloudflare Pages middleware: stop repo-only files leaking from the publish root.
 //
-// This site deploys the repository root as the static asset directory, so
-// files such as .gitignore, .git-hooks/*, marketing-truths.json and tests/*
-// were publicly downloadable (verified by read-only GET, 2026-10-10).
-// Cloudflare Pages `_redirects` does not support 404 rewrites ("Rewrites
-// (other status codes) ❌" in the Pages redirects docs), so a true 404 needs
-// a Function. `_routes.json` limits this middleware to the blocked paths and
-// /api/*, so normal static pages are still served without invoking Functions.
+// Preferred fix is scripts/stage-publish.mjs (allow-listed dist/). Until the
+// Pages project build output directory is dist/, this site still publishes
+// the repository root, so this middleware stays the active layer.
 //
-// Keep BLOCKED_* in sync with `_routes.json` (asserted by tests/smoke_site.mjs).
+// `_routes.json` includes `/*` and excludes only real static assets, so
+// encoded and slash-variant paths reach this function. /api/* is not
+// blocked and falls through to the waitlist function via next().
 
-const BLOCKED_PREFIXES = [
-  "/.git-hooks/",
-  "/.git/",
-  "/.github/",
-  "/.claude/",
-  "/.wrangler/",
-  "/functions/",
-  "/tests/",
-  "/docs/",
-  "/tools/",
-];
-
-const BLOCKED_EXACT = [
-  "/.gitignore",
-  "/.nojekyll",
-  "/marketing-truths.json",
-  "/_routes.json",
-  "/DEPLOYMENT.md",
-  "/README.md",
-];
-
-const isBlocked = (path: string): boolean =>
-  BLOCKED_EXACT.includes(path) || BLOCKED_PREFIXES.some((p) => path.startsWith(p));
+import { isBlockedPath } from "./block_path.js";
 
 interface Env {
   ASSETS: { fetch: (input: Request | string) => Promise<Response> };
@@ -40,7 +16,7 @@ interface Env {
 
 export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
   const url = new URL(request.url);
-  if (!isBlocked(url.pathname)) {
+  if (!isBlockedPath(url.pathname)) {
     return next();
   }
   let body = "Not Found";
