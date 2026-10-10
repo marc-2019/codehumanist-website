@@ -106,6 +106,7 @@ test('privacy banner matches the waitlist fields (email, not name)', () => {
   assert.match(t, /Summary — planned product, at launch/);
   assert.match(t, /Planned, at launch: we do/);
   assert.match(t, /We intend to add encryption at rest/);
+  assert.doesNotMatch(t, /unsubscribe/i);
 });
 
 test('waitlist error responses do not echo the upstream body', () => {
@@ -142,6 +143,17 @@ test('publish routes invoke the middleware for everything except real static ass
   for (const p of [...BLOCKED, ...ENCODED_BLOCKED]) {
     assert.equal(routes.exclude.includes(p), false, `exclude must not skip ${p}`);
   }
+  for (const rule of routes.exclude) {
+    assert.equal(rule.startsWith('/*.'), false, `extension wildcard exclude skips middleware: ${rule}`);
+  }
+  const matchesExclude = (pathname) => routes.exclude.some((rule) => {
+    if (rule.endsWith('/*')) return pathname.startsWith(rule.slice(0, -1));
+    return rule === pathname;
+  });
+  assert.equal(matchesExclude('/functions/block_path.js'), false);
+  assert.equal(matchesExclude('/css/style.css'), true);
+  assert.equal(matchesExclude('/js/main.js'), true);
+  assert.equal(isBlockedPath('/functions/block_path.js'), true);
   const mw = read('functions/_middleware.ts');
   assert.match(mw, /isBlockedPath/);
   assert.match(read('functions/block_path.js'), /decodeURIComponent/);

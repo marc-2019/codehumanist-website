@@ -9,12 +9,14 @@
 // (checked main and cpo/company-site-claims-1010). This script follows that
 // described pattern for this site.
 //
-// Dashboard (until Wrangler config is opted in): 
+// Do not commit a wrangler.toml with pages_build_output_dir. Pages treats
+// that key as the project source of truth and the preview build fails
+// while dist/ is produced only by this script. Needs Marc, in the dashboard:
 //   Build command: node scripts/stage-publish.mjs
 //   Build output directory: dist
-//
-// Until that output directory is what Pages publishes, functions/_middleware.ts
-// remains the active leak block.
+// Confirm dashboard env vars (RESEND_API_KEY) still reach the waitlist
+// function before switching. Until then, functions/_middleware.ts is the
+// active leak block and the publish directory stays the repository root.
 
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
